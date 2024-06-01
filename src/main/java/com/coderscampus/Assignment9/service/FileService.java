@@ -9,10 +9,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class FileService {
 
@@ -21,20 +19,17 @@ public class FileService {
         Integer recipeCounter = 0;
 
         Reader in = new FileReader("recipes.txt");
-        Iterable<CSVRecord> records = CSVFormat.DEFAULT.withIgnoreSurroundingSpaces().builder()
+        Iterable<CSVRecord> records = CSVFormat.EXCEL.withIgnoreSurroundingSpaces().builder()
                 .setHeader("Cooking Minutes", "Dairy Free", "Gluten Free",
                         "Instructions", "Preparation Minutes", "Price Per Serving",
                         "Ready In Minutes", "Servings", "Spoonacular Score",
                         "Title", "Vegan", "Vegetarian")
                 .setQuoteMode(QuoteMode.ALL)
                 .setAllowMissingColumnNames(true)
+                .setEscape('\\')
                 .build()
                 .parse(in);
         for (CSVRecord record : records) {
-            List<String> values = Arrays.stream(record.values()).toList()
-                    .stream()
-                    .map(value -> value.replace("\u00A0", ""))
-                    .toList();
             Recipe recipe = new Recipe();
             recipe.setCookingMinutes(parseField(record, "Cooking Minutes", Integer::parseInt));
             recipe.setDairyFree(parseField(record, "Dairy Free", Boolean::parseBoolean));
