@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FileServiceTest {
 
@@ -18,5 +18,6 @@ class FileServiceTest {
         List<Recipe> recipes = new ArrayList<>();
 
         recipes = fileService.readFile();
+        assertEquals(recipes.get(1).getGlutenFree(), true);
     }
 }

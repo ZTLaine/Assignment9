@@ -3,44 +3,66 @@ package com.coderscampus.Assignment9.service;
 import com.coderscampus.Assignment9.domain.Recipe;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-import org.junit.Test;
+import org.apache.commons.csv.QuoteMode;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class FileService {
 
-    @Test
-    public void readFile() throws IOException {
+    public List<Recipe> readFile() throws IOException {
         List<Recipe> recipes = new ArrayList<>();
+        Integer recipeCounter = 0;
 
-        Reader in = new FileReader("path/to/file.csv");
-        Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
+        Reader in = new FileReader("recipes.txt");
+        Iterable<CSVRecord> records = CSVFormat.DEFAULT.withIgnoreSurroundingSpaces().builder()
+                .setHeader("Cooking Minutes", "Dairy Free", "Gluten Free",
+                        "Instructions", "Preparation Minutes", "Price Per Serving",
+                        "Ready In Minutes", "Servings", "Spoonacular Score",
+                        "Title", "Vegan", "Vegetarian")
+                .setQuoteMode(QuoteMode.ALL)
+                .setAllowMissingColumnNames(true)
+                .build()
+                .parse(in);
         for (CSVRecord record : records) {
+            List<String> values = Arrays.stream(record.values()).toList()
+                    .stream()
+                    .map(value -> value.replace("\u00A0", ""))
+                    .toList();
             Recipe recipe = new Recipe();
-            recipe.setCookingMinutes(Integer.parseInt(record.get("Cooking Minutes")));
-            recipe.setDairyFree(Boolean.parseBoolean(record.get("Dairy Free")));
-            recipe.setGlutenFree(Boolean.parseBoolean(record.get("Gluten Free")));
-            recipe.setDairyFree(Boolean.parseBoolean(record.get("Dairy Free")));
-            recipe.setInstructions(record.get("Instructions"));
-            recipe.setPreparationMinutes(Double.parseDouble(record.get("Preparation Minutes")));
-            recipe.setPricePerServing(Double.parseDouble(record.get("Price Per Serving")));
-            recipe.setReadyInMinutes(Integer.parseInt(record.get("Ready In Minutes")));
-            recipe.setServings(Integer.parseInt(record.get("Servings")));
-            recipe.setSpoonacularScore(Double.parseDouble(record.get("Spoonacular Score")));
-            recipe.setTitle(record.get("Title"));
-            recipe.setVegan(Boolean.parseBoolean(record.get("Vegan")));
-            recipe.setVegetarian(Boolean.parseBoolean(record.get("Vegetarian")));
+            recipe.setCookingMinutes(parseField(record, "Cooking Minutes", Integer::parseInt));
+            recipe.setDairyFree(parseField(record, "Dairy Free", Boolean::parseBoolean));
+            recipe.setGlutenFree(parseField(record, "Gluten Free", Boolean::parseBoolean));
+            recipe.setInstructions(parseField(record, "Instructions", Function.identity()));
+            recipe.setPreparationMinutes(parseField(record, "Preparation Minutes", Double::parseDouble));
+            recipe.setPricePerServing(parseField(record, "Price Per Serving", Double::parseDouble));
+            recipe.setReadyInMinutes(parseField(record, "Ready In Minutes", Integer::parseInt));
+            recipe.setServings(parseField(record, "Servings", Integer::parseInt));
+            recipe.setSpoonacularScore(parseField(record, "Spoonacular Score", Double::parseDouble));
+            recipe.setTitle(parseField(record, "Title", Function.identity()));
+            recipe.setVegan(parseField(record, "Vegan", Boolean::parseBoolean));
+            recipe.setVegetarian(parseField(record, "Vegetarian", Boolean::parseBoolean));
             recipes.add(recipe);
-
-            assertEquals(recipe.getGlutenFree(),true);
-
+            System.out.println(recipeCounter + " completed!");
+            System.out.println("~~~~");
+            System.out.println();
+            recipeCounter++;
         }
+        return recipes;
+    }
 
+    private <T> T parseField(CSVRecord record, String fieldName, Function<String, T> parseFunction){
+        String value = record.get(fieldName);
+        if (!value.equals(fieldName)){
+            System.out.println(fieldName + " read!");
+            return parseFunction.apply(value);
+        }
+        return null;
     }
 }
