@@ -1,3 +1,7 @@
+//  6/2/24
+//  Zack Laine
+//  Assignment 9
+
 package com.coderscampus.Assignment9.service;
 
 import com.coderscampus.Assignment9.domain.Recipe;
@@ -32,7 +36,7 @@ public class FileService {
                 .build()
                 .parse(in);
         for (CSVRecord record : records) {
-            if(record.getRecordNumber() != 1) {
+            if (record.getRecordNumber() != 1) {
                 Recipe recipe = new Recipe();
                 recipe.setCookingMinutes(parseField(record, "Cooking Minutes", Integer::parseInt));
                 recipe.setDairyFree(parseField(record, "Dairy Free", Boolean::parseBoolean));
@@ -56,9 +60,9 @@ public class FileService {
         return recipes;
     }
 
-    private <T> T parseField(CSVRecord record, String fieldName, Function<String, T> parseFunction){
+    private <T> T parseField(CSVRecord record, String fieldName, Function<String, T> parseFunction) {
         String value = record.get(fieldName);
-        if (!value.equals(fieldName)){
+        if (!value.equals(fieldName)) {
             System.out.println(fieldName + " read!");
             return parseFunction.apply(value);
         }
