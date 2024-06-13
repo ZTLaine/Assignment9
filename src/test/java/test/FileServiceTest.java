@@ -37,6 +37,5 @@ class FileServiceTest {
         assertEquals(sut.get(testIndex).getTitle(), "Cheddar Zucchini Cornbread");
         assertEquals(sut.get(testIndex).getVegan(), false);
         assertEquals(sut.get(testIndex).getVegetarian(), true);
-
     }
 }

@@ -5,8 +5,7 @@
 package com.coderscampus.Assignment9.web;
 
 import com.coderscampus.Assignment9.domain.Recipe;
-import com.coderscampus.Assignment9.service.FileService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.coderscampus.Assignment9.service.RecipeService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,40 +15,34 @@ import java.util.List;
 @RestController
 public class RecipeController {
 
-    @Autowired
-    FileService fileService;
+    private final RecipeService recipeService;
+
+    public RecipeController() throws IOException {
+        recipeService = new RecipeService();
+    }
 
     @GetMapping("/gluten-free")
     public List<Recipe> glutenFree() throws IOException {
-        return fileService.readFile().stream()
-                .filter(Recipe::getGlutenFree)
-                .toList();
+        return recipeService.getGlutenFreeRecipes();
     }
 
     @GetMapping("/vegan")
     public List<Recipe> vegan() throws IOException {
-        return fileService.readFile().stream()
-                .filter(Recipe::getVegan)
-                .toList();
+        return recipeService.getVeganRecipes();
     }
 
     @GetMapping("/vegan-and-gluten-free")
     public List<Recipe> veganAndGlutenFree() throws IOException {
-        return fileService.readFile().stream()
-                .filter(Recipe::getVegan)
-                .filter(Recipe::getGlutenFree)
-                .toList();
+        return recipeService.getVeganAndGlutenFreeRecipes();
     }
 
     @GetMapping("/vegetarian")
     public List<Recipe> vegetarian() throws IOException {
-        return fileService.readFile().stream()
-                .filter(Recipe::getVegetarian)
-                .toList();
+        return recipeService.getVegetarianRecipes();
     }
 
     @GetMapping("/all-recipes")
     public List<Recipe> allRecipes() throws IOException {
-        return fileService.readFile();
+        return recipeService.getAllRecipes();
     }
 }

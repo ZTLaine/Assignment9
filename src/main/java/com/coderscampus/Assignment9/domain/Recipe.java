@@ -4,11 +4,9 @@
 
 package com.coderscampus.Assignment9.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Setter
-@Getter
+@Data
 public class Recipe {
     private Integer cookingMinutes;
     private Boolean dairyFree;
@@ -42,23 +40,5 @@ public class Recipe {
         this.title = title;
         this.vegan = vegan;
         this.vegetarian = vegetarian;
-    }
-
-    @Override
-    public String toString() {
-        return "Recipe{" +
-                "cookingMinutes: " + cookingMinutes + ",\n" +
-                "dairyFree: " + dairyFree + ",\n" +
-                "glutenFree: " + glutenFree + ",\n" +
-                "instructions: " + instructions + ",\n" +
-                "preparationMinutes: " + preparationMinutes + ",\n" +
-                "pricePerServing: " + pricePerServing + ",\n" +
-                "readyInMinutes: " + readyInMinutes + ",\n" +
-                "servings: " + servings + ",\n" +
-                "spoonacularScore: " + spoonacularScore + ",\n" +
-                "title: " + title + ",\n" +
-                "vegan: " + vegan + ",\n" +
-                "vegetarian: " + vegetarian + ",\n" +
-                "}";
     }
 }
